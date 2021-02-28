@@ -12,12 +12,15 @@ use std::fs; // For reading input files
 fn read_input(input: &str) -> String {
     // The function will assume `input` is a file path. If an error occurs during reading this
     // probably means it's not a file, and it will use the input string as the text instead.
+
+    // TODO: We should probably do some more error handling here - what if the file exists but it's
+    // binary? Should we be returning an Option or Result or something?
     let res = match fs::read_to_string(input) {
         Ok(s) => s,
-        Err(e) => {
+        Err(_) => {
             println!(
-                "Could not read `{}`: {}. Treating as string literal.",
-                input, e
+                "File `{}` does not exist. Treating as string literal.",
+                input
             );
             String::from(input)
         }
@@ -28,7 +31,7 @@ fn read_input(input: &str) -> String {
 }
 
 fn main() {
-    let in_file = "poem.txt";
+    let in_file = "poem.txts";
     let in_text = read_input(in_file);
     let key_file = "key.txt";
     let key_text = read_input(key_file);
