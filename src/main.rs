@@ -36,11 +36,11 @@ fn read_input(input: &str) -> String {
 }
 
 fn char_to_num(c: char) -> usize {
-    LETTERS.iter().position(|&x| x == c).unwrap()
+    LETTERS.iter().position(|&x| x == c).unwrap() + 1
 }
 
 fn num_to_char(n: usize) -> char {
-    LETTERS[n]
+    LETTERS[n - 1]
 }
 
 fn string_to_vec(s: String) -> Vec<char> {
@@ -62,6 +62,20 @@ fn nums_to_string(v: Vec<usize>) -> String {
     v.into_iter().map(|x| num_to_char(x)).collect::<String>()
 }
 
+fn modulo_add(a: &Vec<usize>, b: &Vec<usize>, modulus: usize) -> Vec<usize> {
+    a.iter()
+        .zip(b.iter())
+        .map(|(x, y)| (x + y) % modulus)
+        .collect::<Vec<usize>>()
+}
+
+fn modulo_subtract(a: &Vec<usize>, b: &Vec<usize>, modulus: usize) -> Vec<usize> {
+    a.iter()
+        .zip(b.iter())
+        .map(|(x, y)| (x - y) % modulus)
+        .collect::<Vec<usize>>()
+}
+
 fn main() {
     // let in_file = "poem.txt";
     // let in_text = read_input(in_file);
@@ -73,4 +87,7 @@ fn main() {
     println!("Key:\n{}", key_text);
     let key_nums = string_to_nums(key_text);
     println!("Key nums:\n{:?}", key_nums);
+    let m = modulo_add(&key_nums, &key_nums, 26);
+    println!("Mod add:\n{:?}", m);
+    println!("{}", nums_to_string(m));
 }
