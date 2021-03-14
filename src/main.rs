@@ -3,15 +3,22 @@ use std::fs; // For reading input files
 use structopt::StructOpt; // For parsing command line arguments
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "options", about = "Some options")]
+#[structopt(name = "vigenere-rs")]
+/// Vignere cypher implentation in Rust.
 struct Opt {
     #[structopt(short, long)]
+    /// Use encode mode (the default)
     encode: bool,
     #[structopt(short, long)]
+    /// Use decode mode
     decode: bool,
     #[structopt(short, long)]
+    /// Path to file containing plain or cyphertext. If a file by this name does not exist it is
+    /// treated as a string literal
     input: String,
     #[structopt(short, long)]
+    /// Path to file containing the key to use. If a file by this name does not exist is it treated
+    /// as a string literal
     key: String,
 }
 
@@ -213,6 +220,6 @@ fn main() {
     } else {
         output = encode(&text, &key);
     }
-    println!("{:?}", output);
+    println!("{}", output);
     std::process::exit(0);
 }
