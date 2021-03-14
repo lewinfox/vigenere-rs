@@ -1,5 +1,19 @@
 use regex;
 use std::fs; // For reading input files
+use structopt::StructOpt; // For parsing command line arguments
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "options", about = "Some options")]
+struct Opt {
+    #[structopt(short, long)]
+    encode: bool,
+    #[structopt(short, long)]
+    decode: bool,
+    #[structopt(short, long)]
+    input: String,
+    #[structopt(short, long)]
+    key: String,
+}
 
 const LETTERS: [char; 26] = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
@@ -22,13 +36,7 @@ fn read_input(input: &str) -> String {
     // binary? Should we be returning an Option or Result or something?
     let res = match fs::read_to_string(input) {
         Ok(s) => s,
-        Err(_) => {
-            println!(
-                "File `{}` does not exist. Treating as string literal.",
-                input
-            );
-            String::from(input)
-        }
+        Err(_) => String::from(input),
     };
     // The strings should be alphanumeric, uppercased and contain no whitespace.
     let re = regex::Regex::new(r"[^[:alnum:]]").unwrap();
@@ -195,13 +203,16 @@ fn test_encode_decode() {
 }
 
 fn main() {
-    let text_file = "poem.txt";
-    let key_file = "key.txt";
-    let text = read_input(&text_file);
-    let key = read_input(&key_file);
-    let encoded = encode(&text, &key);
-    let decoded = decode(&encoded, &key);
-    println!("{:?}", text);
-    println!("{:?}", encoded);
-    println!("{:?}", decoded);
+    // Read args
+    let args = Opt::from_args();
+    let text = read_input(&args.input);
+    let key = read_input(&args.key);
+    let output: String;
+    if args.decode {
+        output = decode(&text, &key);
+    } else {
+        output = encode(&text, &key);
+    }
+    println!("{:?}", output);
+    std::process::exit(0);
 }
